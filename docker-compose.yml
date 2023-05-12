@@ -1,0 +1,32 @@
+version: '3.9'
+services:
+  app:
+    container_name: ms_pari_web_api_container
+    tty: true
+    build: .
+    ports:
+      - "4000:4000"
+    restart: on-failure
+    depends_on:
+      - mysql
+    networks:
+      - ms-pari-web
+
+  mysql:
+    image: bitnami/mariadb:latest
+    container_name: ms_pari_web_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=${DB_USER}
+      - MARIADB_PASSWORD=${DB_PASSWORD}
+      - MARIADB_DATABASE=${DB_NAME}
+    networks:
+      - ms-pari-web
+
+
+# Networks to be created to facilitate communication between containers
+networks:
+  ms-pari-web:
+    driver: bridge
